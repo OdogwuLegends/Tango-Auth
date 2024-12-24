@@ -22,6 +22,11 @@ import java.security.Principal;
 public class AuthController {
     private final AuthService authService;
 
+    @PostMapping("/sign-up")
+    public ResponseEntity<ApiResponse<?>> signUpTest(@RequestParam String id){
+        return authService.createUser();
+    }
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<?>> loginUser(@Valid @RequestBody LoginDto.Request request){
         return authService.login(request);

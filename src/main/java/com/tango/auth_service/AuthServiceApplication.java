@@ -13,4 +13,6 @@ public class AuthServiceApplication {
 		SpringApplication.run(AuthServiceApplication.class, args);
 	}
 
+	// git remote set-url origin git@github.com:OdogwuLegends/Tango-Auth.git
+
 }

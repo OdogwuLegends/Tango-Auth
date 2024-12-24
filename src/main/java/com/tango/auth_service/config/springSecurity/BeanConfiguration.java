@@ -21,10 +21,19 @@ public class BeanConfiguration {
     private final UserRepository userRepository;
 
 
+//    @Bean
+//    public UserDetailsService userDetailsService(){
+//        return username -> {
+//            User user = userRepository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException("User not found."));
+//            return new UserDetailsImplementation(user);
+//        };
+//    }
+
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         return username -> {
-            User user = userRepository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException("User not found."));
+            User user = userRepository.findByEmailOrPhoneNumber(username, username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
             return new UserDetailsImplementation(user);
         };
     }
