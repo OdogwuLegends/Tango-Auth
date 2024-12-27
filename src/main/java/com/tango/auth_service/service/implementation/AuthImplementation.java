@@ -38,6 +38,8 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.tango.auth_service.utils.AppUtils.generateNumericOTP;
 import static com.tango.auth_service.utils.ResponseUtils.createFailureResponse;
@@ -88,15 +90,46 @@ public class AuthImplementation implements AuthService {
         return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse("","User sign up successful"));
     }
 
+//    @Override
+//    public ResponseEntity<ApiResponse<?>> login(LoginDto.Request request) {
+//        try {
+//            User user = userRepository.findByEmail(request.getEmail().toLowerCase().trim()).orElseThrow(() -> new BadCredentialsException("User not found"));
+//
+//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail().toLowerCase().trim(),request.getPassword()));
+//            UserDetails authenticatedUser = new UserDetailsImplementation(user);
+//
+//            String jwToken = jwtService.generateToken(authenticatedUser);
+//
+//            LoginDto.Response response = LoginDto.Response.builder()
+//                    .userId(user.getId())
+//                    .userRole(user.getUserRole().getName())
+//                    .hasChangedDefaultPassword(user.isHasChangedDefaultPassword())
+//                    .jwToken(jwToken)
+//                    .build();
+//
+//            return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse(response,"Login successful"));
+//        } catch (BadCredentialsException ex) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(createFailureResponse("Login failed", "Bad credentials"));
+//        } catch (Exception ex) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(createFailureResponse("Login failed", ex.getMessage()));
+//        }
+//    }
+
     @Override
     public ResponseEntity<ApiResponse<?>> login(LoginDto.Request request) {
         try {
-            User user = userRepository.findByEmail(request.getEmail().toLowerCase().trim()).orElseThrow(() -> new BadCredentialsException("User not found"));
+            User user = new User();
 
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail().toLowerCase().trim(),request.getPassword()));
+            if(request.getUsername().contains("@")) {
+               user = userRepository.findByEmail(request.getUsername().toLowerCase().trim()).orElseThrow(() -> new BadCredentialsException("User not found"));
+            } else {
+                user = userRepository.findByPhoneNumber(request.getUsername()).orElseThrow(() -> new BadCredentialsException("User not found"));
+            }
+
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
             UserDetails authenticatedUser = new UserDetailsImplementation(user);
 
-            String jwToken = jwtService.generateToken(authenticatedUser);
+            String jwToken = jwtService.generateToken(authenticatedUser,user);
 
             LoginDto.Response response = LoginDto.Response.builder()
                     .userId(user.getId())
