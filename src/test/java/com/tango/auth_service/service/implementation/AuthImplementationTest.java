@@ -66,6 +66,26 @@ class AuthImplementationTest {
     }
 
     @Test
+    @Order(3)
+    void loginWithPhoneNumber() {
+        LoginDto.Request request = new LoginDto.Request("09089800901","helloWorld12@!");
+        ResponseEntity<ApiResponse<?>> responseEntity = authService.login(request);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+        ApiResponse<?> apiResponse = responseEntity.getBody();
+        assertNotNull(apiResponse, "ApiResponse should not be null");
+
+        assertEquals("Login successful", apiResponse.getMessage());
+
+        LoginDto.Response loginResponse = (LoginDto.Response) apiResponse.getData();
+        assertNotNull(loginResponse, "Data field should not be null");
+
+        assertNotNull(loginResponse.getJwToken(), "JWT Token should not be null");
+        assertFalse(loginResponse.isHasChangedDefaultPassword());
+    }
+
+    @Test
     void changePassword() {
     }
 
