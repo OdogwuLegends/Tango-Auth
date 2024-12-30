@@ -90,30 +90,6 @@ public class AuthImplementation implements AuthService {
         return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse("","User sign up successful"));
     }
 
-//    @Override
-//    public ResponseEntity<ApiResponse<?>> login(LoginDto.Request request) {
-//        try {
-//            User user = userRepository.findByEmail(request.getEmail().toLowerCase().trim()).orElseThrow(() -> new BadCredentialsException("User not found"));
-//
-//            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail().toLowerCase().trim(),request.getPassword()));
-//            UserDetails authenticatedUser = new UserDetailsImplementation(user);
-//
-//            String jwToken = jwtService.generateToken(authenticatedUser);
-//
-//            LoginDto.Response response = LoginDto.Response.builder()
-//                    .userId(user.getId())
-//                    .userRole(user.getUserRole().getName())
-//                    .hasChangedDefaultPassword(user.isHasChangedDefaultPassword())
-//                    .jwToken(jwToken)
-//                    .build();
-//
-//            return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse(response,"Login successful"));
-//        } catch (BadCredentialsException ex) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(createFailureResponse("Login failed", "Bad credentials"));
-//        } catch (Exception ex) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(createFailureResponse("Login failed", ex.getMessage()));
-//        }
-//    }
 
     @Override
     public ResponseEntity<ApiResponse<?>> login(LoginDto.Request request) {
@@ -184,7 +160,8 @@ public class AuthImplementation implements AuthService {
             Otp otp = new Otp(user.getId(),TIME_IN_SECONDS,numericOTP);
             otpService.create(otp);
 
-            return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse("Operation successful",String.format("OTP sent to %s ",user.getEmail())));
+//            return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse("Operation successful",String.format("OTP sent to %s ",user.getEmail())));
+            return ResponseEntity.status(HttpStatus.OK).body(createSuccessResponse("Operation successful",numericOTP)); // TEST PURPOSE
 
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(createFailureResponse("Operation failed", "Email not correct"));
@@ -237,7 +214,7 @@ public class AuthImplementation implements AuthService {
         }
     }
 
-    public File adminProfilePic(){
+    private File adminProfilePic(){
         File file = File.builder()
                 .name("SUPER_ADMIN")
                 .extension("N/A")
