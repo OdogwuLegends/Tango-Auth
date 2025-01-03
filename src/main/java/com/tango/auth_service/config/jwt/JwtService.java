@@ -1,5 +1,8 @@
 package com.tango.auth_service.config.jwt;
 
+import com.tango.auth_service.config.springSecurity.UserDetailsImplementation;
+import com.tango.auth_service.entities.Permission;
+import com.tango.auth_service.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -12,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 @Service
@@ -22,10 +27,16 @@ public class JwtService {
     @Value("${JWT-SECRET-KEY}")
     private String secretKey;
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetails userDetails,User user) {
+        List<String> permissions = user.getUserRole().getPermission()
+                .stream()
+                .map(Permission::getName)
+                .toList();
 
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("Role",user.getUserRole().getName())
+                .claim("Permissions",permissions)
 //                .claim("Active", user.isActive())
 //                .claim("Email", user.getEmail())
                 .issuedAt(new Date(System.currentTimeMillis()))

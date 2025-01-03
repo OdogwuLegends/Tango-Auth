@@ -12,9 +12,12 @@ public class LoginDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Request{
-        @Email(message = "Email should be valid")
-        @NotBlank(message = "email is required")
-        private String email;
+//        @Email(message = "Email should be valid")
+//        @NotBlank(message = "email is required")
+//        private String email;
+
+        @NotBlank(message = "username is required")
+        private String username;
 
         @NotBlank(message = "password is required")
         private String password;

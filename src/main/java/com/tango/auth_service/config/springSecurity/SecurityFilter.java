@@ -26,13 +26,13 @@ public class SecurityFilter {
                         .requestMatchers("/api/v1/auth/change-password").authenticated())
 //                        .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authenticationProvider(authenticationProvider);
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     private static final String[] NO_AUTH_ENDPOINTS = {
+            "/api/v1/auth/sign-up",
             "/api/v1/auth/login",
             "/api/v1/auth/initiate-password-reset",
             "/api/v1/auth/complete-password-reset"

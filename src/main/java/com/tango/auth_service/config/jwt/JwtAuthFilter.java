@@ -72,7 +72,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         } catch (Exception e) {
 //            log.error("Error in authentication", e);
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // Internal server error
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Token expired
             return;
         }
 

@@ -38,7 +38,8 @@ public class UserDetailsImplementation implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+//        return user.getEmail();
+        return user.getEmail() != null ? user.getEmail() : user.getPhoneNumber();
     }
 
     @Override
